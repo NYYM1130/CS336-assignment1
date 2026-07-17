@@ -19,6 +19,7 @@ dependencies = [
     "wandb>=0.25",
     "ty>=0.0.26",
     "ruff>=0.15.8",
+    "wget>=3.2",
 ]
 
 [build-system]
@@ -44,6 +45,11 @@ line-length = 120
 [tool.ruff.lint.extend-per-file-ignores]
 # Also ignore `E402` in all `__init__.py` files.
 "__init__.py" = ["E402", "F401", "F403", "E501"]
+
+[dependency-groups]
+dev = [
+    "regex>=2026.3.32",
+]
 
 [tool.ruff.lint]
 extend-select = ["UP"]
