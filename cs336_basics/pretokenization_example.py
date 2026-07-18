@@ -1,6 +1,6 @@
 import os
 from typing import BinaryIO
-
+from pathlib import Path
 
 def find_chunk_boundaries(
     file: BinaryIO,
@@ -48,11 +48,14 @@ def find_chunk_boundaries(
     # Make sure all boundaries are unique, but might be fewer than desired_num_chunks
     return sorted(set(chunk_boundaries))
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+input_path = PROJECT_ROOT / "data" / "TinyStoriesV2-GPT4-valid.txt"
+## input_path = PROJECT_ROOT / "data" / "test.txt"
 
 ## Usage
-'''
-with open(..., "rb") as f:
-    num_processes = 4
+
+with open(input_path, "rb") as f:
+    num_processes = 6
     boundaries = find_chunk_boundaries(f, num_processes, b"<|endoftext|>")
 
     # The following is a serial implementation, but you can parallelize this
@@ -61,4 +64,3 @@ with open(..., "rb") as f:
         f.seek(start)
         chunk = f.read(end - start).decode("utf-8", errors="ignore")
         # Run pre-tokenization on your chunk and store the counts for each pre-token
-'''
