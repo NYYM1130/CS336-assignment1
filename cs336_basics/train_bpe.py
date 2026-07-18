@@ -17,8 +17,6 @@ def train_bpe(
     3.使用GPT-2的正则表达式对文本进行分词
     4.在预分词的每个单词内，统计相邻字节的出现次数，存储在pair_count字典中
     5.merge:选择出现次数最多的相邻字节对，组成新token
-
-    
     """
     if not Path(input_path).exists() :
         raise FileNotFoundError(f"Input file '{input_path}' does not exist.")
@@ -131,7 +129,7 @@ def train_bpe(
                     
                     ## 右邻居，各操作同上
                     if i < len(word) - 2 :
-                        right_pair = (word[i], word[i + 1])
+                        right_pair = (word[i + 1], word[i + 2])
                         pair_count[right_pair] -=count
                         if pair_count[right_pair] <= 0 :
                             del pair_count[right_pair]
