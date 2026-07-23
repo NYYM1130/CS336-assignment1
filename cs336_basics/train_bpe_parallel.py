@@ -1,5 +1,6 @@
 import re
 import regex
+import json
 from pretokenization_example import find_chunk_boundaries
 from typing import List
 from pathlib import Path
@@ -210,7 +211,8 @@ def parallel_pretokenize(
 ## 为了程序的可迁移性，把PROJECT_ROOT定义为当前文件的父目录的父目录
 ## 这样无论在什么环境下运行，都会从项目根目录开始寻找数据文件
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-input_path = PROJECT_ROOT / "data" / "TinyStoriesV2-GPT4-train.txt"
+input_path = PROJECT_ROOT / "data" / "TinyStoriesV2-GPT4-valid.txt"
+output_path = PROJECT_ROOT / "data" 
 # 加入多进程设计后训练TinyStoriesV2-GPT4-train，分16块8进程，用时如下：
 # Vocabulary size: 10000
 # Number of merges: 9742
@@ -229,9 +231,33 @@ if __name__ == "__main__":
     )
     vocab, merges = train_bpe(
         raw_count=raw_count,
-        vocab_size=10000,
+        vocab_size=500,
         special_tokens=["<|endoftext|>", "<|pad|>"],
     )
     print(f"Vocabulary size: {len(vocab)}")
     print(f"Number of merges: {len(merges)}")
     print(f"运行时间：{time.perf_counter() - start:.2f} 秒")
+    vocab_json = {
+        str(k): v.decode("latin-1")
+        for k,v in vocab.items()
+    }
+    with open(output_path / "vocab.json", "w", encoding="utf-8") as f:
+        json.dump(
+            vocab_json,
+            f,
+            indent=4
+        )
+    merges_json = [
+        [
+            a.decode("latin-1"),
+            b.decode("latin-1")
+        ]
+        for a,b in merges
+    ]
+
+    with open(output_path / "merges.json", "w", encoding="utf-8") as f:
+        json.dump(
+            merges_json,
+            f,
+            indent=4
+        )

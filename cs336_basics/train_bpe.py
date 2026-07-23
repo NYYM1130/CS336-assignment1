@@ -3,7 +3,7 @@ import regex
 from typing import List
 from pathlib import Path
 import time
-
+import json
 
 def train_bpe(
         input_path: str,
@@ -171,14 +171,14 @@ def train_bpe(
 ## 这样无论在什么环境下运行，都会从项目根目录开始寻找数据文件
 start = time.perf_counter()
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-input_path = PROJECT_ROOT / "data" / "TinyStoriesV2-GPT4-train.txt"
+input_path = PROJECT_ROOT / "data" / "TinyStoriesV2-GPT4-valid.txt"
 # 不加入多进程设计的情况下，训练TinyStoriesV2-GPT4-train.txt
 # Vocabulary size: 10000
 # Number of merges: 9742
 # 运行时间：306.41 秒
-train_bpe(
+vocab, merges = train_bpe(
     input_path = input_path,
-    vocab_size = 10000,
-    special_tokens = ["<|endoftext|>", "<|pad|>"]
+    vocab_size = 100,
+    special_tokens = ["<|endoftext|>", "<|pad|>"] 
 )
 print(f"运行时间：{time.perf_counter() - start:.2f} 秒")
